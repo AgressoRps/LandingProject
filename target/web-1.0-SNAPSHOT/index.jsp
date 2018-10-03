@@ -157,7 +157,7 @@
 		<section>
 			<div class="container_call_back">
 				<h2 id="call_back">Обратная связь</h2>
-				<form action="">
+				<form action="/test" method="post">
 					<div class="form_call_back">
 						<h4>Имя</h4>
 						<input type="text" placeholder="Ваше имя" size="40" required>

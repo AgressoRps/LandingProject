@@ -21,6 +21,11 @@ public class ConnectorDB implements IConnector {
      */
     @Override
     public synchronized Connection getConnection() throws SQLException {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
         return DriverManager.getConnection(receiver.getDBUrl(), receiver.getDBProperties());
     }
 
