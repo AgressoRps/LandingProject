@@ -8,7 +8,7 @@ import java.util.ResourceBundle;
 
 
 public class ConnectorDB implements IConnector {
-    private static volatile IConnector instance;
+    private static volatile ConnectorDB instance;
     private IReceiver receiver;
 
     private ConnectorDB(){
@@ -20,16 +20,16 @@ public class ConnectorDB implements IConnector {
      * @throws SQLException метод может генерировать исключение при подключении к бд
      */
     @Override
-    public Connection getConnection() throws SQLException {
+    public synchronized Connection getConnection() throws SQLException {
         return DriverManager.getConnection(receiver.getDBUrl(), receiver.getDBProperties());
     }
 
     /**
      * Реализация шаблона Singleton (Double Checked Locking & volatile)
-     * @return метод возвращает экземпляр класса в единичном экземпляре
+     * @return метод возвращает соединение с базой данных в единичном экземпляре
      */
-    public static IConnector getInstance() {
-        IConnector localInstance = instance;
+    public static ConnectorDB getInstance() throws SQLException{
+        ConnectorDB localInstance = instance;
         if (localInstance == null){
             synchronized (ConnectorDB.class){
                 localInstance = instance;
