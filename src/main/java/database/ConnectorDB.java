@@ -10,28 +10,44 @@ import java.util.ResourceBundle;
 public class ConnectorDB implements IConnector {
     private static volatile ConnectorDB instance;
     private IReceiver receiver;
+    private Connection connection = null;
 
+    /**
+     * Конструктор класса инициализирует переменные receiver и connection
+     */
     private ConnectorDB(){
         receiver = new ResourceReceiver();
+        connection = initConnection();
     }
 
     /**
-     * @return получаем соедниение с базой данных
-     * @throws SQLException метод может генерировать исключение при подключении к бд
+     * Метод регистрирует драйвер и получает соединение с базой данных
+     * @return возвращает перменной экземпляра класса соединение с бд
      */
-    @Override
-    public synchronized Connection getConnection() throws SQLException {
+    private Connection initConnection(){
+        Connection connection = null;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
+            connection = DriverManager.getConnection(receiver.getDBUrl(), receiver.getDBProperties());
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
+        } catch (SQLException ex){
+            ex.printStackTrace();
         }
-        return DriverManager.getConnection(receiver.getDBUrl(), receiver.getDBProperties());
+        return connection;
+    }
+    /**
+     * Метод получения синхронизированного соединения с БД
+     * @return передается соединение с базой данных
+     */
+    @Override
+    public synchronized Connection getConnection(){
+        return connection;
     }
 
     /**
      * Реализация шаблона Singleton (Double Checked Locking & volatile)
-     * @return метод возвращает соединение с базой данных в единичном экземпляре
+     * @return метод возвращает ссылку на объект ConnectorDB
      */
     public static ConnectorDB getInstance() throws SQLException{
         ConnectorDB localInstance = instance;

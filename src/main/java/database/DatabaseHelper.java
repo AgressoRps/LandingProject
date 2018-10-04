@@ -45,30 +45,45 @@ public class DatabaseHelper implements IHelper {
     /**
      * Метод закрытия экземпляра PreparedStatement
      * @param statement экземпляр, который необходимо закрыть
-     * @throws SQLException метод может сгенирировать исключение при освобождении ресурсов
      */
     @Override
-    public void closePreparedStatement(PreparedStatement statement) throws SQLException {
-        statement.close();
+    public void closePreparedStatement(PreparedStatement statement){
+        if (statement != null){
+            try {
+                statement.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
      * Метод закрытия экземпляра Statement
      * @param statement экземпляр, который необходимо закрыть
-     * @throws SQLException метод может сгенирировать исключение при освобождении ресурсов
      */
     @Override
-    public void closeStatement(Statement statement) throws SQLException {
-        statement.close();
+    public void closeStatement(Statement statement){
+        if (statement != null){
+            try {
+                statement.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
      * Метод закрытия экземпляра ResultSet
      * @param resultSet экземпляр, который необходимо закрыть
-     * @throws SQLException метод может сгенирировать исключение при освобождении ресурсов
      */
     @Override
-    public void closeResultSet(ResultSet resultSet) throws SQLException {
-        resultSet.close();
+    public void closeResultSet(ResultSet resultSet){
+        if (resultSet != null){
+            try {
+                resultSet.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
