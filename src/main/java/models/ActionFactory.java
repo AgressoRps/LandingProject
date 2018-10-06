@@ -1,61 +1,22 @@
 package models;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ActionFactory implements IActionFactory {
-    private static final String PARAM_ID = "idProduct";
-    private static final String PARAM_CLIENT_NAME = "clientName";
-    private static final String PARAM_CLIENT_PHONE = "clientPhoneNumber";
-    private static final String PARAM_CLIENT_MESSAGE = "clientMessage";
-    private static final String PARAM_CALL_NAME = "callMeName";
-    private static final String PARAM_CALL_PHONE = "callMePhone";
-    private static final String PARAM_CALL_MESSAGE = "callMeText";
-    private String commandOne;
-    private String commandTwo;
+    private static final String PARAM_ONE = "idProduct";
+    private static final String PARAM_TWO = "callMeName";
 
     @Override
-    public boolean checkCommand(HttpServletRequest req) {
-        boolean isCommand = false;
-        commandOne = req.getParameter("idProduct");
-        commandTwo = req.getParameter("callMeName");
+    public IInsert getCommand(HttpServletRequest req){
+        IInsert insertAction = null;
+        String commandOne = req.getParameter(PARAM_ONE);
+        String commandTwo = req.getParameter(PARAM_TWO);
         if (commandOne != null){
-            isCommand = true;
+            insertAction = new InsertOrders();
         }
         if (commandTwo != null){
-            isCommand = true;
+            insertAction = new InsertCallBack();
         }
-        return isCommand;
-    }
-
-    @Override
-    public List<String> neutralizeParams(HttpServletRequest req) {
-        List<String> paramsList = new ArrayList<String>();
-        if (commandOne == null || commandOne.isEmpty()){
-            paramsList.add(neutralize(req.getParameter(PARAM_CALL_NAME)));
-            paramsList.add(neutralize(req.getParameter(PARAM_CALL_PHONE)));
-            paramsList.add(neutralize(req.getParameter(PARAM_CALL_MESSAGE)));
-        }else {
-            paramsList.add(neutralize(req.getParameter(PARAM_ID)));
-            paramsList.add(neutralize(req.getParameter(PARAM_CLIENT_NAME)));
-            paramsList.add(neutralize(req.getParameter(PARAM_CLIENT_PHONE)));
-            paramsList.add(neutralize(req.getParameter(PARAM_CLIENT_MESSAGE)));
-        }
-        return paramsList;
-    }
-    private String neutralize(String param){
-        return param == null ? "" : param.replaceAll("<", "&lt")
-                .replaceAll(">", "&gt");
-    }
-
-    @Override
-    public String buildQuery(List<String> params) {
-        return null;
-    }
-
-    @Override
-    public void insertToDatabase(String query) {
-
+        return insertAction;
     }
 }
