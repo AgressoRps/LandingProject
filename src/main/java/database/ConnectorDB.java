@@ -49,7 +49,7 @@ public class ConnectorDB implements IConnector {
      * Реализация шаблона Singleton (Double Checked Locking & volatile)
      * @return метод возвращает ссылку на объект ConnectorDB
      */
-    public static ConnectorDB getInstance() throws SQLException{
+    public static ConnectorDB getInstance(){
         ConnectorDB localInstance = instance;
         if (localInstance == null){
             synchronized (ConnectorDB.class){

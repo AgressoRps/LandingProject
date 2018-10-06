@@ -1,5 +1,7 @@
 package database;
 
+import java.util.List;
+
 public class QueryBuilder {
     private static final String INSERT = "INSERT INTO ";
     private static final String LEFT_BRACKET = "(";

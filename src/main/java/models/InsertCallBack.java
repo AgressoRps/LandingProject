@@ -1,8 +1,12 @@
 package models;
 
+import database.ConnectorDB;
+import database.DatabaseHelper;
 import database.QueryBuilder;
 
 import javax.servlet.http.HttpServletRequest;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,14 +30,29 @@ public class InsertCallBack implements IInsert {
     }
 
     @Override
-    public String buildQuery(String[] params) {
+    public String buildQuery(List<String> params) {
+
         return QueryBuilder.buildInsertPreparedQuery(TABLE_NAME,
                 new String[] {COLUMN_NAME, COLUMN_PHONE, COLUMN_COMMENT},
-                params);
+                params.toArray(new String[0]));
     }
 
     @Override
-    public void insertToDatabase(String query) {
-
+    public void insertToDatabase(String query, String[] params) {
+        ConnectorDB connector = ConnectorDB.getInstance();
+        DatabaseHelper helper = new DatabaseHelper();
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = helper.getPreparedStatement(connector, query);
+            for (int i = 1, j = 0; i <= params.length; i++, j++){
+                preparedStatement.setString(i, params[j]);
+            }
+            preparedStatement.executeUpdate();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        finally {
+            helper.closePreparedStatement(preparedStatement);
+        }
     }
 }

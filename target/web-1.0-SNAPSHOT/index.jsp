@@ -1,8 +1,11 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
+
 <jsp:useBean id="bank" class="models.ProductsBank" type="models.ProductsBank"/>
+<fmt:requestEncoding value="UTF-8" />
 <!doctype html>
-<html lang="en">
+<html>
     <head>
         <meta charset="UTF-8">
         <title>Спорт-товары</title>
@@ -97,11 +100,11 @@
 		        <div style="text-align: center" id="popupWin" class="modalwin">
 		            <h2 id="item_product"></h2>
 		            <form action="controller" method="post">
-						<input type="hidden" id="hiddenInput" name="idProduct" value="">
 		                <input type="text" name="clientName" placeholder="Ваше имя" required="true">
 		                <input type="tel" name="clientPhoneNumber" placeholder="Ваш номер телефона" required="true">
-		                <textarea placeholder="Ваше сообщение..." cols="30" rows="3"></textarea>
-		                <input type="submit" value="Приобрести" id="submit">
+		                <textarea name="clientMessage" placeholder="Ваше сообщение..." cols="30" rows="3"></textarea>
+						<input type="hidden" id="hiddenInput" name="idProduct" value="">
+						<input type="submit" value="Приобрести" id="submit">
 		            </form>
 		        </div>
 				<div class="container_products_title">
@@ -132,7 +135,7 @@
 						<input type="tel" placeholder="Ваш номер телефона" size="40" name="callMePhone" required=>
 						<h4>Сообщение</h4>
 						<textarea placeholder="Ваше сообщение..." cols="40" name="callMeText" rows="3"></textarea>
-						<button>Отправить</button>
+						<button type="submit">Отправить</button>
 					</div>
 				</form>
 			</div>

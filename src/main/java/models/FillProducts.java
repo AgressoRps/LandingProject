@@ -11,7 +11,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 public class FillProducts {
-    private static final String PRODUCTS_TABLE = "products";
+    private static final String TABLE_NAME = "products";
     private static final String COLUMN_ID = "id";
     private static final String COLUMN_NAME = "name";
     private static final String COLUMN_IMAGE = "image_name";
@@ -28,7 +28,7 @@ public class FillProducts {
      * @param products пустая коллекция переданная из ProductsBank для заполнения данными из бд
      */
     public void getDataFromConnector(List<Product> products){
-        String query = QueryBuilder.buildSelectQuery(PRODUCTS_TABLE);
+        String query = QueryBuilder.buildSelectQuery(TABLE_NAME);
         DatabaseHelper databaseHelper = new DatabaseHelper();
         Statement statement = null;
         ResultSet resultSet = null;

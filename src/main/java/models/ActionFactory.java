@@ -3,7 +3,7 @@ package models;
 import javax.servlet.http.HttpServletRequest;
 
 public class ActionFactory implements IActionFactory {
-    private static final String PARAM_ONE = "idProduct";
+    private static final String PARAM_ONE = "clientName";
     private static final String PARAM_TWO = "callMeName";
 
     @Override
