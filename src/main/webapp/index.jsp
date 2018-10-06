@@ -100,7 +100,7 @@
 						<input type="hidden" id="hiddenInput" name="idProduct" value="">
 		                <input type="text" name="clientName" placeholder="Ваше имя" required="true">
 		                <input type="tel" name="clientPhoneNumber" placeholder="Ваш номер телефона" required="true">
-		                <textarea placeholder="Ваше сообщение..." cols="30" rows="3"></textarea>
+		                <textarea name="clientMessage" placeholder="Ваше сообщение..." cols="30" rows="3"></textarea>
 		                <input type="submit" value="Приобрести" id="submit">
 		            </form>
 		        </div>
@@ -132,7 +132,7 @@
 						<input type="tel" placeholder="Ваш номер телефона" size="40" name="callMePhone" required=>
 						<h4>Сообщение</h4>
 						<textarea placeholder="Ваше сообщение..." cols="40" name="callMeText" rows="3"></textarea>
-						<button>Отправить</button>
+						<button type="submit">Отправить</button>
 					</div>
 				</form>
 			</div>
