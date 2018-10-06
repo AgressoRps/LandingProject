@@ -10,6 +10,8 @@ public class QueryBuilder {
     private static final String COMMA = ", ";
     private static final String QUESTION_MARK = "?";
     private static final String ALL = "*";
+    private static final String LIMIT = " LIMIT ";
+    private static final int DEFAULT_LIMIT = 6;
 
     /**
      * Метод построения строки запроса для экземпляра PreparedStatement
@@ -50,9 +52,9 @@ public class QueryBuilder {
         StringBuilder stringBuilder = new StringBuilder(SELECT);
         for (int i = 0; i < columnsTable.length; i++){
             if (i != columnsTable.length-1){
-                stringBuilder.append(columnsTable[i].concat(COMMA));
+                stringBuilder.append(columnsTable[i].concat(COMMA).concat(getLimit()));
             }else {
-                stringBuilder.append(columnsTable[i].concat(FROM).concat(tableName));
+                stringBuilder.append(columnsTable[i].concat(FROM).concat(tableName).concat(getLimit()));
             }
         }
         return stringBuilder.toString();
@@ -64,7 +66,10 @@ public class QueryBuilder {
      * @return возвращается готовая строка запроса для передачи экземпляру Statement
      */
     public static synchronized String buildSelectQuery(String tableName) {
-        String result = SELECT.concat(ALL).concat(FROM).concat(tableName);
+        String result = SELECT.concat(ALL).concat(FROM).concat(tableName).concat(getLimit());
         return result;
+    }
+    private static String getLimit(){
+        return LIMIT + DEFAULT_LIMIT;
     }
 }

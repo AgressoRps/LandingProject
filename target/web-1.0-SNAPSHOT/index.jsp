@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<jsp:useBean id="bank" class="models.ProductsBank" type="models.ProductsBank"/>
 <!doctype html>
 <html lang="en">
     <head>
@@ -9,13 +10,17 @@
 		<link rel="shortcut icon" href="resources/images/heart.ico" type="res/png">
         <link rel="stylesheet" type="text/css" href="css/main_css.css">
         <script type="text/javascript">
-        	function showModalWin() {
-			    var darkLayer = document.createElement('div'); 
+        	function showModalWin(id, name) {
+			    var darkLayer = document.createElement('div');
+			    var item = document.getElementById('item_product');
+                var modalWin = document.getElementById('popupWin');
+                var input = document.getElementById('hiddenInput');
+                input.value = id;
+			    item.textContent = "Приобрести " + name;
 			    darkLayer.id = 'shadow'; 
 			    document.body.appendChild(darkLayer);
-			    var modalWin = document.getElementById('popupWin');
 			    modalWin.style.display = 'flex';
-			    darkLayer.onclick = function () { 
+			    darkLayer.onclick = function () {
 			    darkLayer.parentNode.removeChild(darkLayer); 
 			    modalWin.style.display = 'none';
 			    return false;
@@ -90,8 +95,9 @@
 			<div class="container_products">
 				<!-- Наше модальное всплывающее окно -->
 		        <div style="text-align: center" id="popupWin" class="modalwin">
-		            <h2>Приобрести товар (name)</h2>
-		            <form>
+		            <h2 id="item_product"></h2>
+		            <form action="controller" method="post">
+						<input type="hidden" id="hiddenInput" name="idProduct" value="">
 		                <input type="text" name="clientName" placeholder="Ваше имя" required="true">
 		                <input type="tel" name="clientPhoneNumber" placeholder="Ваш номер телефона" required="true">
 		                <textarea placeholder="Ваше сообщение..." cols="30" rows="3"></textarea>
@@ -102,69 +108,30 @@
 					<h2 id="catalog">Каталог</h2>
 				</div>
 				<div class="container_products_content">
-					<div class="products_item">
-						<img src="resources/images/gymgir.jpg" alt="Товар">
-						<h4>Гантель 12кг</h4>
-						<h5>Стоимость: 1300р</h5>
-						<form>
-				            <input type="button" value="Купить" onclick="showModalWin()">
-				        </form>
-					</div>
-					<div class="products_item">
-						<img src="resources/images/g2.jpg" alt="Товар">
-						<h4>Гантель 8кг</h4>
-						<h5>Стоимость: 1000р</h5>
-						<form>
-				            <input type="button" value="Купить" onclick="showModalWin()">
-				        </form>
-					</div>
-					<div class="products_item">
-						<img src="resources/images/g3.jpg" alt="Товар">
-						<h4>Гантель 6кг</h4>
-						<h5>Стоимость: 800р</h5>
-						<form>
-							<input hidden="true" name="setCookieItem" value="!!!">
-				            <input type="submit" value="Купить" onclick="showModalWin()">
-				        </form>
-					</div>
-					<div class="products_item">
-						<img src="resources/images/g4.jpg" alt="Товар">
-						<h4>Гантель 16кг</h4>
-						<h5>Стоимость: 1600р</h5>
-						<form>
-				            <input type="button" value="Купить" onclick="showModalWin()">
-				        </form>
-					</div>
-					<div class="products_item">
-						<img src="resources/images/g5.jpg" alt="Товар">
-						<h4>Гантель 24кг</h4>
-						<h5>Стоимость: 2200р</h5>
-						<form>
-				            <input type="button" value="Купить" onclick="showModalWin()">
-				        </form>
-					</div>
-					<div class="products_item">
-						<img src="resources/images/g6.jpg" alt="Товар">
-						<h4>Гиря 14кг</h4>
-						<h5>Стоимость: 1450р</h5>
-						<form>
-				            <input type="button" value="Купить" onclick="showModalWin()">
-				        </form>
-					</div>
+					<c:forEach var="item" items="${bank.products}">
+						<div class="products_item">
+							<img src="resources/images/${item.imageName}" alt="Товар">
+							<h4>${item.name} ${item.weight} кг</h4>
+							<h5>Стоимость: ${item.price}</h5>
+							<form>
+								<input type="button" value="Купить" onclick="showModalWin(${item.id}, '${item.name}')">
+							</form>
+						</div>
+					</c:forEach>
 				</div>
 			</div>
 		</section>
 		<section>
 			<div class="container_call_back">
 				<h2 id="call_back">Обратная связь</h2>
-				<form action="">
+				<form action="controller" method="post">
 					<div class="form_call_back">
 						<h4>Имя</h4>
-						<input type="text" placeholder="Ваше имя" size="40" required>
+						<input type="text" placeholder="Ваше имя" size="40" name="callMeName" required>
 						<h4>Номер телефона</h4>
-						<input type="tel" placeholder="Ваш номер телефона" size="40" required=>
+						<input type="tel" placeholder="Ваш номер телефона" size="40" name="callMePhone" required=>
 						<h4>Сообщение</h4>
-						<textarea placeholder="Ваше сообщение..." cols="40" rows="3"></textarea>
+						<textarea placeholder="Ваше сообщение..." cols="40" name="callMeText" rows="3"></textarea>
 						<button>Отправить</button>
 					</div>
 				</form>
