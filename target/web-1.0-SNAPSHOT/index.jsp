@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
 
-<jsp:useBean id="bank" class="models.ProductsBank" type="models.ProductsBank"/>
+<jsp:useBean id="bank" class="models.data.ProductsBank" type="models.data.ProductsBank"/>
 <fmt:requestEncoding value="UTF-8" />
 <!doctype html>
 <html>
@@ -100,9 +100,9 @@
 		        <div style="text-align: center" id="popupWin" class="modalwin">
 		            <h2 id="item_product"></h2>
 		            <form action="controller" method="post">
-		                <input type="text" name="clientName" placeholder="Ваше имя" required="true">
-		                <input type="tel" name="clientPhoneNumber" placeholder="Ваш номер телефона" required="true">
-		                <textarea name="clientMessage" placeholder="Ваше сообщение..." cols="30" rows="3"></textarea>
+		                <input type="text" name="clientName" placeholder="Ваше имя" maxlength="16" required="true">
+		                <input type="tel" name="clientPhoneNumber" placeholder="Ваш номер телефона" maxlength="16" required="true">
+		                <textarea name="clientMessage" placeholder="Ваше сообщение..." cols="30" maxlength="100" rows="3"></textarea>
 						<input type="hidden" id="hiddenInput" name="idProduct" value="">
 						<input type="submit" value="Приобрести" id="submit">
 		            </form>
@@ -130,11 +130,11 @@
 				<form action="controller" method="post">
 					<div class="form_call_back">
 						<h4>Имя</h4>
-						<input type="text" placeholder="Ваше имя" size="40" name="callMeName" required>
+						<input type="text" placeholder="Ваше имя" size="40" name="callMeName" maxlength="16" required>
 						<h4>Номер телефона</h4>
-						<input type="tel" placeholder="Ваш номер телефона" size="40" name="callMePhone" required=>
+						<input type="tel" placeholder="Ваш номер телефона" size="40" name="callMePhone" maxlength="16" required=>
 						<h4>Сообщение</h4>
-						<textarea placeholder="Ваше сообщение..." cols="40" name="callMeText" rows="3"></textarea>
+						<textarea placeholder="Ваше сообщение..." cols="40" name="callMeText" maxlength="100" rows="3"></textarea>
 						<button type="submit">Отправить</button>
 					</div>
 				</form>
