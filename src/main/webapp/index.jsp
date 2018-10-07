@@ -97,16 +97,16 @@
 		<section>
 			<div class="container_products">
 				<!-- Наше модальное всплывающее окно -->
-		        <div style="text-align: center" id="popupWin" class="modalwin">
-		            <h2 id="item_product"></h2>
-		            <form action="controller" method="post">
-		                <input type="text" name="clientName" placeholder="Ваше имя" maxlength="16" required="true">
-		                <input type="tel" name="clientPhoneNumber" placeholder="Ваш номер телефона" maxlength="16" required="true">
-		                <textarea name="clientMessage" placeholder="Ваше сообщение..." cols="30" maxlength="100" rows="3"></textarea>
+				<div style="text-align: center" id="popupWin" class="modalwin">
+					<h2 id="item_product"></h2>
+					<form action="controller" method="post">
+						<input type="text" name="clientName" placeholder="Ваше имя" maxlength="16" required="true">
+						<input type="tel" name="clientPhoneNumber" placeholder="Ваш номер телефона" maxlength="16" required="true">
+						<textarea name="clientMessage" placeholder="Ваше сообщение..." cols="30" maxlength="100" rows="3"></textarea>
 						<input type="hidden" id="hiddenInput" name="idProduct" value="">
 						<input type="submit" value="Приобрести" id="submit">
-		            </form>
-		        </div>
+					</form>
+				</div>
 				<div class="container_products_title">
 					<h2 id="catalog">Каталог</h2>
 				</div>

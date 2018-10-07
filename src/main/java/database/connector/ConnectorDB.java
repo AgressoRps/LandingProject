@@ -1,5 +1,7 @@
 package database.connector;
 
+import org.apache.log4j.Logger;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -8,6 +10,13 @@ import java.util.ResourceBundle;
 
 
 public class ConnectorDB implements IConnector {
+    private static final String LOG_MESSAGE_CREATE = "Создан экземпляр класса";
+    private static final String LOG_MESSAGE_INIT_CONNECTION = "Получено соединение с базой данных";
+    private static final String LOG_MESSAGE_ERROR_CREATE_CONNECTION = "Ошибка получения соединения с базой данных";
+    private static final String LOG_MESSAGE_SEND_CONNECTION = "Соединение отправлено";
+    private static final String LOG_MESSAGE_DRIVER_NOT_FOUND = "Драйвер не найден";
+    private static final Logger log = Logger.getLogger(ConnectorDB.class);
+
     private static volatile ConnectorDB instance;
     private IReceiver receiver;
     private Connection connection = null;
@@ -29,9 +38,12 @@ public class ConnectorDB implements IConnector {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             connection = DriverManager.getConnection(receiver.getDBUrl(), receiver.getDBProperties());
+            log.info(LOG_MESSAGE_INIT_CONNECTION);
         } catch (ClassNotFoundException e) {
+            log.error(LOG_MESSAGE_DRIVER_NOT_FOUND);
             e.printStackTrace();
         } catch (SQLException ex){
+            log.info(LOG_MESSAGE_ERROR_CREATE_CONNECTION);
             ex.printStackTrace();
         }
         return connection;
@@ -42,6 +54,7 @@ public class ConnectorDB implements IConnector {
      */
     @Override
     public synchronized Connection getConnection(){
+        log.info(LOG_MESSAGE_SEND_CONNECTION);
         return connection;
     }
 
@@ -56,6 +69,7 @@ public class ConnectorDB implements IConnector {
                 localInstance = instance;
                 if (localInstance == null){
                     instance = localInstance = new ConnectorDB();
+                    log.info(LOG_MESSAGE_CREATE);
                 }
             }
         }

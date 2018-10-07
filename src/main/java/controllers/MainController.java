@@ -11,9 +11,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import org.apache.log4j.Logger;
 
 @WebServlet("/controller")
 public class MainController extends HttpServlet {
+    private static final String LOG_MESSAGE_POST = "Получен post-запрос";
+    private static final String LOG_MESSAGE_POST_SUCCESS = "Post-запрос успешно обработан";
+    private static final Logger log = Logger.getLogger(MainController.class);
 
     /**
      * Метод обрабатывает post-запросы страницы index.jsp
@@ -24,6 +28,7 @@ public class MainController extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        log.info(LOG_MESSAGE_POST);
         resp.setContentType("text/html; charset=UTF-8");
         req.setCharacterEncoding("UTF-8");
         ActionFactory action = new ActionFactory();
@@ -35,5 +40,6 @@ public class MainController extends HttpServlet {
         }
         RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/index.jsp");
         dispatcher.forward(req, resp);
+        log.info(LOG_MESSAGE_POST_SUCCESS);
     }
 }

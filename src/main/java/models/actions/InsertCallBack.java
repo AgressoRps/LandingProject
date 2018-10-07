@@ -4,6 +4,7 @@ import database.connector.ConnectorDB;
 import database.helpers.DatabaseHelper;
 import database.helpers.QueryBuilder;
 import models.helpers.Neutralizer;
+import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.PreparedStatement;
@@ -12,6 +13,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class InsertCallBack implements IInsert {
+    private static final String LOG_MESSAGE_NEUTRALIZE = "Нейтрализация инъекций";
+    private static final String LOG_MESSAGE_SEND = "Отправка письма на почту";
+    private static final String LOG_MESSAGE_BUILD = "Построение строки запроса";
+    private static final String LOG_MESSAGE_INSERT = "Добавление обратного звонка в базу данных";
+    private static final String LOG_MESSAGE_ERROR_INSERT = "Ошибка добавления в базу данных";
+
     private static final String TABLE_NAME = "call_back";
     private static final String COLUMN_NAME = "name";
     private static final String COLUMN_PHONE = "phone";
@@ -24,6 +31,8 @@ public class InsertCallBack implements IInsert {
     private static final String SEND_THEME = "Клиент просит перезвонить";
     private static final String SEND_EMAIL = "AgressoRj@gmail.com";
 
+    private static final Logger log = Logger.getLogger(InsertCallBack.class);
+
     /**
      * Метод последовательно обезвреживает каждый переданный параметр от JavaScript иньекций
      * Добавляет все параметры в коллекцию
@@ -33,6 +42,7 @@ public class InsertCallBack implements IInsert {
      */
     @Override
     public List<String> neutralizeParams(HttpServletRequest req) {
+        log.info(LOG_MESSAGE_NEUTRALIZE);
         List<String> paramsList = new ArrayList<String>();
         paramsList.add(Neutralizer.neutralize(req.getParameter(PARAM_CALL_NAME)));
         paramsList.add(Neutralizer.neutralize(req.getParameter(PARAM_CALL_PHONE)));
@@ -46,6 +56,7 @@ public class InsertCallBack implements IInsert {
      * @param params параметры из формы
      */
     private void sendEmail(List<String> params){
+        log.info(LOG_MESSAGE_SEND);
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < params.size(); i++){
             builder.append(params.get(i).concat("\n"));
@@ -62,6 +73,7 @@ public class InsertCallBack implements IInsert {
      */
     @Override
     public String buildQuery(List<String> params) {
+        log.info(LOG_MESSAGE_BUILD);
         return QueryBuilder.buildInsertPreparedQuery(TABLE_NAME,
                 new String[] {COLUMN_NAME, COLUMN_PHONE, COLUMN_COMMENT},
                 params.toArray(new String[0]));
@@ -78,12 +90,14 @@ public class InsertCallBack implements IInsert {
         DatabaseHelper helper = new DatabaseHelper();
         PreparedStatement preparedStatement = null;
         try {
+            log.info(LOG_MESSAGE_INSERT);
             preparedStatement = helper.getPreparedStatement(connector, query);
             for (int i = 1, j = 0; i <= params.length; i++, j++){
                 preparedStatement.setString(i, params[j]);
             }
             preparedStatement.executeUpdate();
         }catch (SQLException e){
+            log.error(LOG_MESSAGE_ERROR_INSERT);
             e.printStackTrace();
         }
         finally {

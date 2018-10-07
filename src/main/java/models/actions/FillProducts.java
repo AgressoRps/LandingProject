@@ -4,6 +4,7 @@ import database.connector.ConnectorDB;
 import database.helpers.DatabaseHelper;
 import database.helpers.QueryBuilder;
 import models.data.Product;
+import org.apache.log4j.Logger;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,12 +12,18 @@ import java.sql.Statement;
 import java.util.List;
 
 public class FillProducts {
+    private static final String LOG_MESSAGE_GET_DATA = "Получение данных из БД, для заполнения страницы товарами";
+    private static final String LOG_MESSAGE_INIT_PRODUCTS = "Заполнение коллекции products";
+    private static final String LOG_MESSAGE_ERROR = "Ошибка при работе с БД";
+    private static final String LOG_MESSAGE_CLEAR = "Освобождение ресурсов";
     private static final String TABLE_NAME = "products";
     private static final String COLUMN_ID = "id";
     private static final String COLUMN_NAME = "name";
     private static final String COLUMN_IMAGE = "image_name";
     private static final String COLUMN_WEIGHT = "weight";
     private static final String COLUMN_PRICE = "price";
+
+    private static final Logger log = Logger.getLogger(FillProducts.class);
 
     public FillProducts(){
     }
@@ -34,11 +41,13 @@ public class FillProducts {
         ResultSet resultSet = null;
         ConnectorDB connectorDB;
         try {
+            log.info(LOG_MESSAGE_GET_DATA);
             connectorDB = ConnectorDB.getInstance();
             statement = databaseHelper.getStatement(connectorDB);
             resultSet = statement.executeQuery(query);
             initProductsBank(products, resultSet);
         } catch (SQLException e) {
+            log.error(LOG_MESSAGE_ERROR);
             e.printStackTrace();
         }finally {
             closedAllConnections(databaseHelper, statement, resultSet);
@@ -52,6 +61,7 @@ public class FillProducts {
      * @throws SQLException метод может генерировать исключение при работе с бд
      */
     private void initProductsBank(List<Product> products, ResultSet resultSet) throws SQLException {
+        log.info(LOG_MESSAGE_INIT_PRODUCTS);
         while (resultSet.next()){
             int id = resultSet.getInt(COLUMN_ID);
             String name = resultSet.getString(COLUMN_NAME);
@@ -69,6 +79,7 @@ public class FillProducts {
      * @param resultSet освобождаемая переменная экземпляра resultState, результат выполнения запроса к бд
      */
     private void closedAllConnections(DatabaseHelper helper, Statement statement, ResultSet resultSet){
+        log.info(LOG_MESSAGE_CLEAR);
         helper.closeStatement(statement);
         helper.closeResultSet(resultSet);
     }

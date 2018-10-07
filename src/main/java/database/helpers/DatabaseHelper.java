@@ -1,6 +1,7 @@
 package database.helpers;
 
 import database.connector.ConnectorDB;
+import org.apache.log4j.Logger;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -8,6 +9,15 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class DatabaseHelper implements IHelper {
+    private static final String LOG_MESSAGE_PREPARED_STATEMENT = "Передача экземпляра PreparedStatement";
+    private static final String LOG_MESSAGE_STATEMENT = "Передача экземпляра Statement";
+    private static final String LOG_MESSAGE_RESULT_SET = "Передача экземпляра ResultSet";
+    private static final String LOG_MESSAGE_CLOSED_PREPARED = "Закрытие PreparedStatement";
+    private static final String LOG_MESSAGE_CLOSED_STATEMENT = "Закрытие Statement";
+    private static final String LOG_MESSAGE_CLOSED_RESULT = "Закрытие ResultSet";
+    private static final String LOG_MESSAGE_ERROR_CLOSED = "Ошибка закрытия";
+
+    private static final Logger log = Logger.getLogger(DatabaseHelper.class);
 
     /**
      * Метод получения подготовленного запроса к базе данных
@@ -18,6 +28,7 @@ public class DatabaseHelper implements IHelper {
      */
     @Override
     public PreparedStatement getPreparedStatement(ConnectorDB connector, String query) throws SQLException {
+        log.info(LOG_MESSAGE_PREPARED_STATEMENT);
         return connector.getConnection().prepareStatement(query);
     }
 
@@ -29,6 +40,7 @@ public class DatabaseHelper implements IHelper {
      */
     @Override
     public Statement getStatement(ConnectorDB connector) throws SQLException {
+        log.info(LOG_MESSAGE_STATEMENT);
         return connector.getConnection().createStatement();
     }
 
@@ -41,18 +53,20 @@ public class DatabaseHelper implements IHelper {
      */
     @Override
     public ResultSet getResultSet(Statement statement, String query) throws SQLException {
+        log.info(LOG_MESSAGE_RESULT_SET);
         return statement.executeQuery(query);
     }
 
     /**
      * Метод закрытия экземпляра PreparedStatement
-     * @param statement экземпляр, который необходимо закрыть
+     * @param preparedStatement экземпляр, который необходимо закрыть
      */
     @Override
-    public void closePreparedStatement(PreparedStatement statement){
-        if (statement != null){
+    public void closePreparedStatement(PreparedStatement preparedStatement){
+        log.info(LOG_MESSAGE_CLOSED_PREPARED);
+        if (preparedStatement != null){
             try {
-                statement.close();
+                preparedStatement.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -65,10 +79,12 @@ public class DatabaseHelper implements IHelper {
      */
     @Override
     public void closeStatement(Statement statement){
+        log.info(LOG_MESSAGE_CLOSED_STATEMENT);
         if (statement != null){
             try {
                 statement.close();
             } catch (SQLException e) {
+                log.error(LOG_MESSAGE_ERROR_CLOSED);
                 e.printStackTrace();
             }
         }
@@ -80,11 +96,13 @@ public class DatabaseHelper implements IHelper {
      */
     @Override
     public void closeResultSet(ResultSet resultSet){
+        log.info(LOG_MESSAGE_CLOSED_RESULT);
         if (resultSet != null){
             try {
                 resultSet.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
+            } catch (SQLException ex) {
+                log.error(LOG_MESSAGE_ERROR_CLOSED);
+                ex.printStackTrace();
             }
         }
     }
