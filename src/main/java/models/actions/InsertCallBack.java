@@ -21,9 +21,13 @@ public class InsertCallBack implements IInsert {
     private static final String PARAM_CALL_PHONE = "callMePhone";
     private static final String PARAM_CALL_COMMENT = "callMeText";
 
+    private static final String SEND_THEME = "Клиент просит перезвонить";
+    private static final String SEND_EMAIL = "AgressoRj@gmail.com";
+
     /**
      * Метод последовательно обезвреживает каждый переданный параметр от JavaScript иньекций
      * Добавляет все параметры в коллекцию
+     * Вызывает метод отправки письма с данными о заказе владельцу сайта
      * @param req получает параметры переданные из формы
      * @return возвращается коллекция параметров, готовая к построению запроса
      */
@@ -33,7 +37,21 @@ public class InsertCallBack implements IInsert {
         paramsList.add(Neutralizer.neutralize(req.getParameter(PARAM_CALL_NAME)));
         paramsList.add(Neutralizer.neutralize(req.getParameter(PARAM_CALL_PHONE)));
         paramsList.add(Neutralizer.neutralize(req.getParameter(PARAM_CALL_COMMENT)));
+        sendEmail(paramsList);
         return paramsList;
+    }
+
+    /**
+     * Метод отправки письма с подробной информацией о заказе
+     * @param params параметры из формы
+     */
+    private void sendEmail(List<String> params){
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < params.size(); i++){
+            builder.append(params.get(i).concat("\n"));
+        }
+        Sender sslSender = new Sender();
+        sslSender.send(SEND_THEME, builder.toString(), SEND_EMAIL);
     }
 
     /**

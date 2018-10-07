@@ -3,6 +3,8 @@ package models.actions;
 import database.connector.ConnectorDB;
 import database.helpers.DatabaseHelper;
 import database.helpers.QueryBuilder;
+import models.data.Product;
+import models.data.ProductsBank;
 import models.helpers.Neutralizer;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,9 +25,14 @@ public class InsertOrders implements IInsert {
     private static final String PARAM_CLIENT_PHONE = "clientPhoneNumber";
     private static final String PARAM_CLIENT_COMMENT = "clientMessage";
 
+    private static final String SEND_THEME = "Клиент желает приобрести товар";
+    private static final String SEND_EMAIL = "AgressoRj@gmail.com";
+    private static final String SEND_ITEM = "Клиента интересует ";
+
     /**
      * Метод последовательно обезвреживает каждый переданный параметр от JavaScript иньекций
      * Добавляет все параметры в коллекцию
+     * Вызывает метод отправки письма с данными о заказе владельцу сайта
      * @param req получает параметры переданные из формы
      * @return возвращается коллекция параметров, готовая к построению запроса
      */
@@ -36,7 +43,29 @@ public class InsertOrders implements IInsert {
         paramsList.add(Neutralizer.neutralize(req.getParameter(PARAM_CLIENT_PHONE)));
         paramsList.add(Neutralizer.neutralize(req.getParameter(PARAM_CLIENT_COMMENT)));
         paramsList.add(Neutralizer.neutralize(req.getParameter(PARAM_ID)));
+        sendEmail(paramsList);
         return paramsList;
+    }
+
+    /**
+     * Метод отправки письма с подробной информацией о заказе
+     * @param params параметры из формы
+     */
+    private void sendEmail(List<String> params){
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < params.size(); i++){
+            if (i == params.size() - 1){
+                ProductsBank productsBank = new ProductsBank();
+                List<Product> products = productsBank.getProducts();
+                builder.append(SEND_ITEM);
+                builder.append(products.get(Integer.valueOf(params.get(i)) - 1).getName());
+                builder.append(" id: ".concat(params.get(i)));
+            }else {
+                builder.append(params.get(i).concat("\n"));
+            }
+        }
+        Sender sslSender = new Sender();
+        sslSender.send(SEND_THEME, builder.toString(), SEND_EMAIL);
     }
 
     /**
